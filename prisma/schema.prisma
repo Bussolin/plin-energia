@@ -16,3 +16,17 @@ model User {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
+
+model Document {
+    id        String       @id @default(uuid())
+    type      DocumentType
+    title     String
+    content   String
+    createdAt DateTime     @default(now())
+    updatedAt DateTime     @updatedAt
+}
+
+enum DocumentType {
+    PDF
+    WEBSITE
+}
