@@ -102,9 +102,9 @@ http://localhost:3000/api
     - Lista de documentos processados
     - Inclui tipo e título do documento
 
-#### Clientes
+#### Usuários
 
-- `POST /clients`
+- `POST /user`
 
     - Criar novo cliente
     - Corpo da requisição:
@@ -117,17 +117,17 @@ http://localhost:3000/api
     }
     ```
 
-- `GET /clients`
+- `GET /user`
 
     - Listar todos os clientes
     - Requer autenticação
 
-- `GET /clients/:id`
+- `GET /user/:id`
 
     - Buscar cliente por ID
     - Requer autenticação
 
-- `PUT /clients/:id`
+- `PUT /user/:id`
 
     - Atualizar dados do cliente
     - Requer autenticação
@@ -140,7 +140,7 @@ http://localhost:3000/api
     }
     ```
 
-- `DELETE /clients/:id`
+- `DELETE /user/:id`
 
     - Remover cliente
     - Requer autenticação
