@@ -1,4 +1,9 @@
-import { HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+    HttpException,
+    Injectable,
+    NotFoundException,
+    UnauthorizedException,
+} from '@nestjs/common';
 import { UserService } from 'src/modules/user/services/user.service';
 import { LoginInputDto } from '../dtos/login-dto';
 import { verify as argon2verify } from 'argon2';
@@ -17,7 +22,7 @@ export class AuthService {
             user = await this.userService.findByEmail(loginDto.email);
         } catch (e) {
             if (e instanceof HttpException) throw e;
-            throw new UnauthorizedException('Invalid credentials');
+            throw new NotFoundException('Invalid credentials');
         }
 
         const passwordMatch = await argon2verify(user.password, loginDto.password);
