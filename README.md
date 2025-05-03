@@ -51,11 +51,15 @@ git clone <repository-url>
 cd plin-energia
 ```
 
-2. Crie um arquivo `.env` no diretório raiz:
+2. Crie um arquivo `.env` de acordo com o arquivo .env.example no diretório raiz:
+
+Exemplo:
 
 ```env
-DATABASE_URL="postgresql://postgres:postgres@plin-energia-db:5432/postgres?schema=public"
-PORT=3000
+DATABASE_URL="postgres://postgres:examplepass@localhost/plin_leitor"
+
+JWT_SECRET="700e4ff6d59ec3e898103d97878de79b0e5cdeb77d0481ddf831d72002f9ce3e"
+JWT_EXPIRATION_TIME="240H"
 ```
 
 3. Instale as dependências:
