@@ -1,9 +1,18 @@
-import { Controller, Post, Body, UseInterceptors, UploadedFile } from '@nestjs/common';
+import {
+    Controller,
+    Post,
+    UseInterceptors,
+    UploadedFile,
+    Query,
+    ValidationPipe,
+    UsePipes,
+} from '@nestjs/common';
 import {
     ApiBody,
     ApiConsumes,
     ApiCreatedResponse,
     ApiOperation,
+    ApiQuery,
     ApiTags,
 } from '@nestjs/swagger';
 import { PDFScrapperService } from '../services/pdf-scrapper.service';
@@ -11,9 +20,11 @@ import { WebScrapperService } from '../services/web-scrapper.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
 import { ScrappePDFOutputDto } from '../dtos/scrappe-pdf-dto';
+import { ScrappeURLDto, ScrappeUrlOutputDto } from '../dtos/scrappe-url-dto';
 
 @ApiTags('Document Scrapper')
 @Controller('document-scrapper')
+@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 export class DocumentScrapperController {
     constructor(
         private readonly pdfScrapperService: PDFScrapperService,
@@ -46,7 +57,13 @@ export class DocumentScrapperController {
     }
 
     @Post('url')
-    async scrappeURL(@Body() body: any) {
-        return this.webScrapperService.scrappeURL(body);
+    @ApiOperation({ summary: 'Scrape a URL' })
+    @ApiCreatedResponse({
+        description: 'The URL has been successfully scraped',
+        type: ScrappeUrlOutputDto,
+    })
+    @ApiQuery({ name: 'url', type: String })
+    async scrappeURL(@Query() url: ScrappeURLDto) {
+        return this.webScrapperService.scrappeURL(url);
     }
 }

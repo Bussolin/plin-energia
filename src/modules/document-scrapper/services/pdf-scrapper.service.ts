@@ -6,13 +6,14 @@ import { DocumentDataService } from './document-data.service';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as pdfParse from 'pdf-parse';
+import { TDocumentScrapperOutput } from '../common/document-scrapper.types';
 import { TFilesNames } from '../types/document.types';
 
 @Injectable()
 export class PDFScrapperService {
     constructor(private readonly documentDataService: DocumentDataService) {}
 
-    async scrappePDF(file: Express.Multer.File) {
+    async scrappePDF(file: Express.Multer.File): Promise<TDocumentScrapperOutput> {
         try {
             const pdf = await pdfParse(file.buffer);
             const { info, metadata, text } = pdf;

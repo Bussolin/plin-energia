@@ -5,6 +5,14 @@ import { DocumentBuilder, SwaggerModule, SwaggerCustomOptions } from '@nestjs/sw
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
+    process.on('uncaughtException', (error) => {
+        console.log('Uncaught Exception:', error);
+    });
+
+    process.on('unhandledRejection', (reason, promise) => {
+        console.log('Unhandled Rejection at:', promise, 'reason:', reason);
+    });
+
     const config = new DocumentBuilder()
         .setTitle('Plin leitura')
         .setDescription(
