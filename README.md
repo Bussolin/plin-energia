@@ -68,6 +68,12 @@ JWT_EXPIRATION_TIME="240H"
 npm install
 ```
 
+4. rode a aplicação:
+
+```bash
+npm run start:dev
+```
+
 ## Documentação da API
 
 Após iniciar a aplicação, você pode acessar a documentação Swagger em:
