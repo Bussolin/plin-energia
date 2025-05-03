@@ -1,0 +1,21 @@
+services:
+    plin-energia-api:
+        image: plin-energia-api
+        ports:
+            - 3000:3000
+        volumes:
+            - ../.env:/app/.env
+        networks:
+            - plin-energia-network
+        depends_on:
+            - plin-energia-db
+    plin-energia-db:
+        image: postgres:15
+        environment:
+            - POSTGRES_PASSWORD=postgres
+        networks:
+            - plin-energia-network
+
+networks:
+    plin-energia-network:
+        driver: bridge
