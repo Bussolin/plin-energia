@@ -1,9 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule, SwaggerCustomOptions } from '@nestjs/swagger';
+import { GlobalRoutesException } from './middlewares/route-exception.filter';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
+
+    app.useGlobalFilters(new GlobalRoutesException());
 
     process.on('uncaughtException', (error) => {
         console.log('Uncaught Exception:', error);
@@ -19,7 +22,7 @@ async function bootstrap() {
             'Bem-vindo à documentação do Plin leitor. Aqui você encontra informações detalhadas sobre os endpoints disponíveis, como usar, etc.',
         )
         .setVersion('1.0.0')
-        // .addBearerAuth()
+        .addBearerAuth()
         .build();
 
     const document = SwaggerModule.createDocument(app, config);

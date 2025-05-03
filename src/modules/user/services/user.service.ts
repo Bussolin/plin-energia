@@ -13,6 +13,7 @@ import { UserFindByIdResponseDto } from '../dtos/user-find-by-id-dto';
 import { UserFindAllResponseDto } from '../dtos/user-find-all-dto';
 import { UserCreateResponseDto } from '../dtos/user-create-dto';
 import { UserUpdateInputDto } from '../dtos/user-update-dto';
+import { hash } from 'argon2';
 
 @Injectable()
 export class UserService {
@@ -20,8 +21,10 @@ export class UserService {
 
     async create(user: TUserCreateInput): Promise<UserCreateResponseDto> {
         try {
+            const password = await hash(user.password);
+
             const userCreated = await this.prisma.user.create({
-                data: user,
+                data: { ...user, password },
                 select: {
                     id: true,
                     name: true,
@@ -112,6 +115,21 @@ export class UserService {
             }
             if (error instanceof HttpException) throw error;
             throw new InternalServerErrorException('Error deleting user');
+        }
+    }
+
+    async findByEmail(email: string): Promise<User> {
+        try {
+            const user = await this.prisma.user.findUnique({
+                where: { email },
+            });
+
+            if (!user) throw new NotFoundException('User not found');
+
+            return user;
+        } catch (error) {
+            if (error instanceof HttpException) throw error;
+            throw new InternalServerErrorException('Error finding user by email');
         }
     }
 }

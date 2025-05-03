@@ -8,12 +8,16 @@ import * as path from 'path';
 import * as pdfParse from 'pdf-parse';
 import { TDocumentScrapperOutput } from '../common/document-scrapper.types';
 import { TFilesNames } from '../types/document.types';
+import { Request } from 'express';
 
 @Injectable()
 export class PDFScrapperService {
     constructor(private readonly documentDataService: DocumentDataService) {}
 
-    async scrappePDF(file: Express.Multer.File): Promise<TDocumentScrapperOutput> {
+    async scrappePDF(
+        file: Express.Multer.File,
+        req: Request & { userId: string },
+    ): Promise<TDocumentScrapperOutput> {
         try {
             const pdf = await pdfParse(file.buffer);
             const { info, metadata, text } = pdf;
@@ -23,9 +27,10 @@ export class PDFScrapperService {
                     type: DocumentType.PDF,
                     title:
                         info?.Title ||
-                        metadata._metadata['dc:title'] ||
+                        metadata?._metadata['dc:title'] ||
                         file.originalname,
                     content: text,
+                    createdById: req.userId,
                 });
             }
 
@@ -51,8 +56,10 @@ export class PDFScrapperService {
 
             return await this.documentDataService.saveDocumentData({
                 type: DocumentType.PDF,
-                title: info?.Title || metadata._metadata['dc:title'] || file.originalname,
+                title:
+                    info?.Title || metadata?._metadata['dc:title'] || file.originalname,
                 content: fullText,
+                createdById: req.userId,
             });
         } catch (error) {
             console.log(error.message, error.stack);

@@ -5,12 +5,16 @@ import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { TDocumentScrapperOutput } from '../common/document-scrapper.types';
 import { ScrappeURLDto } from '../dtos/scrappe-url-dto';
+import { Request } from 'express';
 
 @Injectable()
 export class WebScrapperService {
     constructor(private readonly documentDataService: DocumentDataService) {}
 
-    async scrappeURL(data: ScrappeURLDto): Promise<TDocumentScrapperOutput> {
+    async scrappeURL(
+        data: ScrappeURLDto,
+        req: Request & { userId: string },
+    ): Promise<TDocumentScrapperOutput> {
         try {
             const response = await axios.get(data.url);
             const $ = cheerio.load(response.data);
@@ -27,6 +31,7 @@ export class WebScrapperService {
                 type: DocumentType.WEBSITE,
                 title: title ?? 'Untitled',
                 content: bodyContent,
+                createdById: req.userId,
             });
         } catch (error) {
             console.log(error);

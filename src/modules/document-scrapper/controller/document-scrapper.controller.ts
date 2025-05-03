@@ -6,6 +6,7 @@ import {
     Query,
     ValidationPipe,
     UsePipes,
+    Req,
 } from '@nestjs/common';
 import {
     ApiBody,
@@ -18,12 +19,14 @@ import {
 import { PDFScrapperService } from '../services/pdf-scrapper.service';
 import { WebScrapperService } from '../services/web-scrapper.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Express } from 'express';
+import { Express, Request } from 'express';
 import { ScrappePDFOutputDto } from '../dtos/scrappe-pdf-dto';
 import { ScrappeURLDto, ScrappeUrlOutputDto } from '../dtos/scrappe-url-dto';
+import { ApiCustomBearerAuth } from 'src/decorators/auth.decorator';
 
 @ApiTags('Document Scrapper')
 @Controller('document-scrapper')
+@ApiCustomBearerAuth()
 @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 export class DocumentScrapperController {
     constructor(
@@ -52,8 +55,11 @@ export class DocumentScrapperController {
         type: ScrappePDFOutputDto,
     })
     @UseInterceptors(FileInterceptor('file'))
-    async scrappePDF(@UploadedFile() file: Express.Multer.File) {
-        return this.pdfScrapperService.scrappePDF(file);
+    async scrappePDF(
+        @UploadedFile() file: Express.Multer.File,
+        @Req() req: Request & { userId: string },
+    ) {
+        return this.pdfScrapperService.scrappePDF(file, req);
     }
 
     @Post('url')
@@ -63,7 +69,10 @@ export class DocumentScrapperController {
         type: ScrappeUrlOutputDto,
     })
     @ApiQuery({ name: 'url', type: String })
-    async scrappeURL(@Query() url: ScrappeURLDto) {
-        return this.webScrapperService.scrappeURL(url);
+    async scrappeURL(
+        @Query() url: ScrappeURLDto,
+        @Req() req: Request & { userId: string },
+    ) {
+        return this.webScrapperService.scrappeURL(url, req);
     }
 }

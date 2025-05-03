@@ -27,6 +27,8 @@ import {
 } from '../dtos/user-find-by-id-dto';
 import { UserUpdateInputDto, UserUpdateInputIdDto } from '../dtos/user-update-dto';
 import { UserDeleteInputDto } from '../dtos/user-delete-dto';
+import { ApiCustomBearerAuth } from 'src/decorators/auth.decorator';
+import { PublicRoute } from 'src/decorators/public-route.decorator';
 
 @ApiTags('User')
 @Controller('user')
@@ -34,6 +36,7 @@ import { UserDeleteInputDto } from '../dtos/user-delete-dto';
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
+    @PublicRoute()
     @Post()
     @ApiOperation({ summary: 'Create a new user' })
     @ApiCreatedResponse({
@@ -46,16 +49,18 @@ export class UserController {
     }
 
     @Get()
+    @ApiCustomBearerAuth()
     @ApiOperation({ summary: 'Get all users' })
     @ApiOkResponse({
         description: 'The users have been successfully retrieved.',
-        type: [UserFindAllResponseDto],
+        type: UserFindAllResponseDto,
     })
     async findAll() {
         return this.userService.findAll();
     }
 
     @Get(':id')
+    @ApiCustomBearerAuth()
     @ApiOperation({ summary: 'Get a user by id' })
     @ApiOkResponse({
         description: 'The user has been successfully retrieved.',
@@ -66,6 +71,7 @@ export class UserController {
     }
 
     @Put(':id')
+    @ApiCustomBearerAuth()
     @ApiOperation({ summary: 'Update a user by id' })
     @ApiOkResponse({
         description: 'The user has been successfully updated.',
@@ -77,6 +83,7 @@ export class UserController {
     }
 
     @Delete(':id')
+    @ApiCustomBearerAuth()
     @ApiOperation({ summary: 'Delete a user by id' })
     @ApiNoContentResponse({
         description: 'The user has been successfully deleted.',
